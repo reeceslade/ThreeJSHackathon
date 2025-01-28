@@ -23,6 +23,27 @@ const floor = new THREE.Mesh(floorGeometry, floorMaterial);
 floor.rotation.x = -Math.PI / 2; // Rotate the floor to be horizontal
 scene.add(floor);
 
+// Add a road outline
+const roadGeometry = new THREE.PlaneGeometry(1, 100); // Road dimensions
+const roadMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.DoubleSide });
+const road = new THREE.Mesh(roadGeometry, roadMaterial);
+road.position.y = 0.01; // Slightly above the floor to avoid z-fighting
+road.rotation.x = -Math.PI / 2; // Same orientation as the floor
+scene.add(road);
+
+
+
+const textureLoader = new THREE.TextureLoader();
+
+// Load the textures
+const roadColor = textureLoader.load('/Road007_2K-JPG_Color.jpg'); // Base color
+const roadDisplacement = textureLoader.load('/Road007_2K-JPG_Displacement.jpg'); // Displacement map
+const roadNormal = textureLoader.load('/Road007_2K-JPG_NormalGL.jpg'); // Normal map
+const roadRoughness = textureLoader.load('/Road007_2K-JPG_Roughness.jpg'); // Roughness map
+
+
+
+
 // Add a cube for testing
 const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
 const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
@@ -58,6 +79,27 @@ document.addEventListener('keyup', (event) => {
         case 'KeyD': moveRight = false; break;
     }
 });
+
+/* Create a simple building using BoxGeometry
+const building = new THREE.Group(); // Group to hold all parts of the building
+
+// Base of the building
+const baseGeometry = new THREE.BoxGeometry(5, 5, 5);
+const baseMaterial = new THREE.MeshBasicMaterial({ color: 0x808080 });
+const base = new THREE.Mesh(baseGeometry, baseMaterial);
+base.position.y = 2.5; // Move base up so it sits on the ground
+building.add(base);
+
+// Roof of the building
+const roofGeometry = new THREE.BoxGeometry(6, 1, 6);
+const roofMaterial = new THREE.MeshBasicMaterial({ color: 0x8B4513 });
+const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+roof.position.y = 5.5; // Position roof on top of the base
+building.add(roof);
+
+// Add the building to the scene
+scene.add(building);
+*/ 
 
 // Animation loop
 const velocity = new THREE.Vector3();

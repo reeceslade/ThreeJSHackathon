@@ -39,7 +39,7 @@ body, html {
 .crosshair::after {
     content: '';
     position: absolute;
-    background: white;
+    background: red;
 }
 
 .crosshair::before {
