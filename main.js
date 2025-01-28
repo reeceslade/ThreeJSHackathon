@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+export { camera, renderer, controls, animate};
 
 // Scene setup
 const scene = new THREE.Scene();
@@ -58,44 +59,6 @@ document.addEventListener('keyup', (event) => {
     }
 });
 
-// Click to lock pointer (enable first-person controls)
-document.addEventListener('click', () => {
-    controls.lock();
-});
-
-// Create a canvas for the custom cursor
-const canvas = document.createElement('canvas');
-canvas.width = 30;
-canvas.height = 30;
-const context = canvas.getContext('2d');
-document.body.appendChild(canvas);
-canvas.style.position = 'absolute';
-canvas.style.top = '0';
-canvas.style.left = '0';
-canvas.style.pointerEvents = 'none'; // Prevent it from interfering with the scene
-
-// Draw the "+" pointer on the canvas
-function drawPointer(x, y) {
-    context.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-    context.beginPath();
-    context.moveTo(0, canvas.height / 2);
-    context.lineTo(canvas.width, canvas.height / 2); // Horizontal line
-    context.moveTo(canvas.width / 2, 0);
-    context.lineTo(canvas.width / 2, canvas.height); // Vertical line
-    context.strokeStyle = 'black';
-    context.lineWidth = 2;
-    context.stroke();
-    canvas.style.left = `${x - canvas.width / 2}px`;
-    canvas.style.top = `${y - canvas.height / 2}px`;
-}
-
-// Mouse move listener to update the pointer position
-document.addEventListener('mousemove', (event) => {
-    if (!controls.isLocked) {
-        drawPointer(event.clientX, event.clientY); // Draw the pointer at mouse position
-    }
-});
-
 // Animation loop
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
@@ -122,8 +85,6 @@ function animate() {
 
     renderer.render(scene, camera);
 }
-
-animate();
 
 // Handle window resize
 window.addEventListener('resize', () => {
