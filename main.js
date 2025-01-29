@@ -1,6 +1,9 @@
 import * as THREE from 'three';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { TGALoader } from 'three/addons/loaders/TGALoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import {generateRoad } from '/generateRoad.js';
 export { camera, renderer, controls, animate};
 
 // Scene setup
@@ -23,72 +26,12 @@ const floor = new THREE.Mesh(floorGeometry, floorMaterial);
 floor.rotation.x = -Math.PI / 2; // Rotate the floor to be horizontal
 scene.add(floor);
 
-// Add a road outline
-const roadGeometry = new THREE.PlaneGeometry(1, 100); // Road dimensions
-const roadMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.DoubleSide });
-const road = new THREE.Mesh(roadGeometry, roadMaterial);
-road.position.y = 0.01; // Slightly above the floor to avoid z-fighting
-road.rotation.x = -Math.PI / 2; // Same orientation as the floor
-scene.add(road);
-
-function createGridRoads(scene, roadCount, roadSpacing) {
-    const roadWidth = 1;
-    const roadLength = 100; // Same as the plane's size
-    
-    const roadMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.DoubleSide });
-
-    // Calculate the bounds of the plane
-    const planeSize = 100;
-    const halfPlaneSize = planeSize / 2;
-
-    for (let i = 0; i < roadCount; i++) {
-        // Calculate the position for front-to-back roads
-        const xPosition = i * roadSpacing - (roadSpacing * (roadCount - 1)) / 2;
-
-        // Check if the road is within the plane's bounds
-        if (Math.abs(xPosition) <= halfPlaneSize) {
-            const roadGeometry1 = new THREE.PlaneGeometry(roadWidth, roadLength);
-            const road1 = new THREE.Mesh(roadGeometry1, roadMaterial);
-            road1.position.set(xPosition, 0.01, 0);
-            road1.rotation.x = -Math.PI / 2;
-            scene.add(road1);
-        }
-
-        // Calculate the position for left-to-right roads
-        const zPosition = i * roadSpacing - (roadSpacing * (roadCount - 1)) / 2;
-
-        // Check if the road is within the plane's bounds
-        if (Math.abs(zPosition) <= halfPlaneSize) {
-            const roadGeometry2 = new THREE.PlaneGeometry(roadLength, roadWidth);
-            const road2 = new THREE.Mesh(roadGeometry2, roadMaterial);
-            road2.position.set(0, 0.01, zPosition);
-            road2.rotation.x = -Math.PI / 2;
-            scene.add(road2);
-        }
-    }
-}
 
 // Example usage
-createGridRoads(scene, 150, 20); // Creates roads in each direction, spaced 20 units apart
+generateRoad(scene, 150, 20); // Creates roads in each direction, spaced 20 units apart
 
 
 const textureLoader = new THREE.TextureLoader();
-
-// Load the textures
-const roadColor = textureLoader.load('/Road007_2K-JPG_Color.jpg'); // Base color
-const roadDisplacement = textureLoader.load('/Road007_2K-JPG_Displacement.jpg'); // Displacement map
-const roadNormal = textureLoader.load('/Road007_2K-JPG_NormalGL.jpg'); // Normal map
-const roadRoughness = textureLoader.load('/Road007_2K-JPG_Roughness.jpg'); // Roughness map
-
-
-
-
-// Add a cube for testing
-const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
-const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-cube.position.set(0, 0.5, 0); // Place the cube slightly above the floor
-scene.add(cube);
 
 // PointerLockControls for first-person movement
 const controls = new PointerLockControls(camera, renderer.domElement);
@@ -173,3 +116,30 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+
+// Lighting
+const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+scene.add(ambientLight);
+
+const light = new THREE.DirectionalLight(0xffffff, 2.5);
+light.position.set(1, 1, 1);
+scene.add(light);
+
+// Load 3D Model
+const loader = new GLTFLoader();
+loader.load(
+  '/alien_creature.glb', // Adjust this path to your model
+  function (gltf) {
+    const model = gltf.scene;
+    scene.add(model);
+    model.scale.set(2, 2, 2)
+    model.position.set(0, 0, 0); // Adjust position if needed
+  },
+  undefined,
+  function (error) {
+    console.error(error);
+  }
+);
+
+animate();
