@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>My first three.js app</title>
-        <script type="importmap">
-            {
-              "imports": {
-                "three": "https://cdn.jsdelivr.net/npm/three@<version>/build/three.module.js",
-                "three/addons/": "https://cdn.jsdelivr.net/npm/three@<version>/examples/jsm/"
-              }
-            }
-          </script>
-		  <link rel="stylesheet" href="style.css">
-	</head>
-	<body>
-		<div id="startMenu" class="start-menu">
-			<h1>Welcome to the Game</h1>
-			<button id="startButton">Start</button>
-		</div>
-		<div id="crosshair" class="crosshair"></div> <!-- Crosshair element -->
-		<script type="module" src="/main.js"></script>
-		<script type="module" src="menu.js"></script>
-	</body>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My first three.js app</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.153.0/examples/jsm/"
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div id="startMenu" class="start-menu">
+      <h1>Welcome to the Game</h1>
+      <button id="startButton">Start</button>
+    </div>
+    <div id="crosshair" class="crosshair"></div> <!-- Crosshair element -->
+    <script type="module" src="/main.js"></script>
+    <script type="module" src="menu.js"></script>
+  </body>
 </html>
