@@ -26,16 +26,12 @@ const floor = new THREE.Mesh(floorGeometry, floorMaterial);
 floor.rotation.x = -Math.PI / 2; // Rotate the floor to be horizontal
 scene.add(floor);
 
-
-// Example usage
-generateRoad(scene, 150, 20); // Creates roads in each direction, spaced 20 units apart
-
-
-const textureLoader = new THREE.TextureLoader();
-
 // PointerLockControls for first-person movement
 const controls = new PointerLockControls(camera, renderer.domElement);
 scene.add(controls.getObject());
+
+// Generate road
+generateRoad(scene, 150, 20); // Creates roads in each direction, spaced 20 units apart
 
 // Movement variables
 let moveForward = false;
@@ -68,57 +64,26 @@ document.addEventListener('keyup', (event) => {
     }
 });
 
-/* Create a simple building using BoxGeometry
-const building = new THREE.Group(); // Group to hold all parts of the building
-
-// Base of the building
-const baseGeometry = new THREE.BoxGeometry(5, 5, 5);
-const baseMaterial = new THREE.MeshBasicMaterial({ color: 0x808080 });
-const base = new THREE.Mesh(baseGeometry, baseMaterial);
-base.position.y = 2.5; // Move base up so it sits on the ground
-building.add(base);
-
-// Roof of the building
-const roofGeometry = new THREE.BoxGeometry(6, 1, 6);
-const roofMaterial = new THREE.MeshBasicMaterial({ color: 0x8B4513 });
-const roof = new THREE.Mesh(roofGeometry, roofMaterial);
-roof.position.y = 5.5; // Position roof on top of the base
-building.add(roof);
-
-// Add the building to the scene
-scene.add(building);
-*/ 
 
 const spaceships = [];  // Array to hold references to the spaceship models
-
-// Function to create and display the bounding box (transparent wireframe)
-function createBoundingBox() {
-    const boxWidth = 150;
-    const boxDepth = 150;
-    let maxHeight = 0;
-
-    // Find the highest point (y position) among the spaceships
-    spaceships.forEach(spaceship => {
-        if (spaceship.position.y + spaceship.scale.y * 12.5 > maxHeight) {
-            maxHeight = spaceship.position.y + spaceship.scale.y * 12.5; // Add scale factor to get accurate height
-        }
+const numberOfSpaceships = 100;  // Adjust this number as needed
+function createPlane(yPosition, offset = 0) {
+    const planeGeometry = new THREE.PlaneGeometry(200, 200); // Adjust the size of the plane
+    const planeMaterial = new THREE.MeshBasicMaterial({
+        color: 0x00ff00, // Use a green color for the box planes for visibility
+        side: THREE.DoubleSide, // Make the plane visible from both sides
+        wireframe: true,
+        transparent: true, // Set transparency
+        opacity: 0.3 // Adjust the transparency level
     });
-
-    // Create the bounding box with adjusted height based on spaceship positions
-    const boxGeometry = new THREE.BoxGeometry(boxWidth, maxHeight, boxDepth);
-    const boxMaterial = new THREE.MeshBasicMaterial({
-        color: 0x00ff00,  // Color of the wireframe (green in this case)
-        wireframe: true,   // Enable wireframe mode
-        transparent: true, // Make it transparent
-        opacity: 0.2       // Set the opacity for transparency
-    });
-    const boundingBox = new THREE.Mesh(boxGeometry, boxMaterial);
-    boundingBox.position.set(0, maxHeight / 2, 0); // Position the box at the center (half of the max height)
-    scene.add(boundingBox);
+    const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    plane.rotation.x = -Math.PI / 2; // Rotate the plane to be horizontal
+    plane.position.y = yPosition + offset; // Position the plane with the offset applied
+    scene.add(plane);
 }
 
 function loadSpaceships() {
-    for (let i = 0; i < numberOfAliens; i++) {
+    for (let i = 0; i < numberOfSpaceships; i++) {
         loader.load(
             '/spaceship_lowpoly.glb', // Adjust this path to your spaceship model
             function (gltf) {
@@ -130,11 +95,21 @@ function loadSpaceships() {
                     Math.random() * 150 - 50  // Random z position within the plane's bounds
                 );
                 scene.add(model);
-                
+
                 spaceships.push(model);  // Store the model in the spaceships array
 
-                // After loading a spaceship, update the bounding box
-                createBoundingBox(); 
+                // Calculate the bounding box and height of the spaceship
+                const boundingBox = new THREE.Box3().setFromObject(model);
+                const shipHeight = boundingBox.max.y - boundingBox.min.y;
+                console.log('Spaceship height:', shipHeight); // Log the height of the spaceship
+
+                // Create transparent boxes around the spaceship at both heights
+
+                // Lower box
+                createPlane(boundingBox.min.y, -5); // Move it further down
+
+                // Upper box
+                createPlane(boundingBox.max.y, 5);  // Move it further up
             },
             undefined,
             function (error) {
@@ -143,8 +118,6 @@ function loadSpaceships() {
         );
     }
 }
-
-
 
 // Animation loop
 const velocity = new THREE.Vector3();
@@ -201,6 +174,10 @@ scene.add(light);
 const loader = new GLTFLoader();
 
 const numberOfAliens = 100; // Adjust this number as needed
+loadSpaceships();
+
+animate();
+
 
 /*
 const numberOfAliens = 10; // Adjust this number as needed
@@ -229,6 +206,3 @@ function loadAliens() {
 */
 // Call to load aliens
 //loadAliens();
-loadSpaceships();
-
-animate();
