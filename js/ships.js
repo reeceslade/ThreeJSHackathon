@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { scene } from './main.js'; // Adjust the path as needed
+import { scene } from '/js/main.js'; // Adjust the path as needed
 
 export const spaceships = [];  // Array to hold references to the spaceship models
 export const numberOfSpaceships = 100;  // Adjust this number as needed
@@ -22,10 +22,11 @@ export function createPlane(yPosition, offset = 0) {
     scene.add(plane);
 }
 
+
 export function loadSpaceships(loader, scene) {
     for (let i = 0; i < numberOfSpaceships; i++) {
         loader.load(
-            '/spaceship_lowpoly.glb', // Adjust this path to your spaceship model
+            '/3DModels/spaceship_lowpoly.glb', // Adjust this path to your spaceship model
             function (gltf) {
                 const model = gltf.scene;
                 model.scale.set(0.25, 0.25, 0.25); // Scale the model
@@ -66,9 +67,49 @@ export function loadSpaceships(loader, scene) {
     }
 }
 
+
+// Create walls around the bounding box
+function createWalls() {
+    const wallGeometry = new THREE.PlaneGeometry(200, 200);
+    const wallMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide, wireframe: true });
+
+    const walls = {
+        left: new THREE.Mesh(wallGeometry, wallMaterial),
+        right: new THREE.Mesh(wallGeometry, wallMaterial),
+        front: new THREE.Mesh(wallGeometry, wallMaterial),
+        back: new THREE.Mesh(wallGeometry, wallMaterial),
+        top: new THREE.Mesh(wallGeometry, wallMaterial),
+        bottom: new THREE.Mesh(wallGeometry, wallMaterial)
+    };
+
+    // Set wall positions
+    walls.left.rotation.y = Math.PI / 2;
+    walls.left.position.set(-100, 50, 0);
+
+    walls.right.rotation.y = Math.PI / 2;
+    walls.right.position.set(100, 50, 0);
+
+    walls.front.position.set(0, 50, 100);
+    walls.front.rotation.x = -Math.PI / 2;
+
+    walls.back.position.set(0, 50, -100);
+    walls.back.rotation.x = Math.PI / 2;
+
+    walls.top.position.set(0, 100, 0);
+    walls.top.rotation.x = Math.PI / 2;
+
+    walls.bottom.position.set(0, 0, 0);
+    walls.bottom.rotation.x = -Math.PI / 2;
+
+    // Add walls to the scene
+    Object.values(walls).forEach(wall => scene.add(wall));
+}
+
+
 export function animateSpaceship(model, boundingBox, scene) {
     // Random speed for movement
     const speed = Math.random() * 0.2 + 0.1; // Random speed between 0.1 and 0.3
+    
 
     // Random direction of movement for the spaceship
     const direction = new THREE.Vector3(
@@ -94,6 +135,7 @@ export function animateSpaceship(model, boundingBox, scene) {
             // Reverse the lateral direction with a bit more movement in z
             direction.z = Math.random() * 0.5 + 0.5 * (direction.z > 0 ? 1 : -1);
         }
+        
 
         // Call the next frame
         requestAnimationFrame(move);
@@ -102,3 +144,6 @@ export function animateSpaceship(model, boundingBox, scene) {
     // Start the animation loop
     move();
 }
+
+
+

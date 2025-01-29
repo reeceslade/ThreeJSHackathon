@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { scene, camera, renderer, controls } from './main.js';
-import { spaceships } from './ships.js';
-import { movement } from './movement.js';
+import { scene, camera, renderer, controls } from '/js/main.js';
+import { spaceships } from '/js/ships.js';
+import { movement } from '/js/movement.js';
 
 export function animate() {
     requestAnimationFrame(animate);

@@ -1,4 +1,4 @@
-import { camera, renderer, controls, animate } from './main.js'; // Import from main.js
+import { controls, animate } from '/js/main.js'; // Import from main.js
 
 document.getElementById('startButton').addEventListener('click', () => {
     // Hide the start menu
