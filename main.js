@@ -42,6 +42,8 @@ let moveForward = false;
 let moveBackward = false;
 let moveLeft = false;
 let moveRight = false;
+let moveUp = false; // New variable for moving up
+let moveDown = false; // New variable for moving down
 
 // Event listeners for keyboard input
 document.addEventListener('keydown', (event) => {
@@ -50,6 +52,8 @@ document.addEventListener('keydown', (event) => {
         case 'KeyS': moveBackward = true; break;
         case 'KeyA': moveLeft = true; break;
         case 'KeyD': moveRight = true; break;
+        case 'Space': moveUp = true; break; // Move up with Space key
+        case 'ShiftLeft': moveDown = true; break; // Move down with Left Shift key
     }
 });
 
@@ -59,6 +63,8 @@ document.addEventListener('keyup', (event) => {
         case 'KeyS': moveBackward = false; break;
         case 'KeyA': moveLeft = false; break;
         case 'KeyD': moveRight = false; break;
+        case 'Space': moveUp = false; break; // Stop moving up when Space is released
+        case 'ShiftLeft': moveDown = false; break; // Stop moving down when Left Shift is released
     }
 });
 
@@ -85,21 +91,50 @@ scene.add(building);
 
 const spaceships = [];  // Array to hold references to the spaceship models
 
+// Function to create and display the bounding box (transparent wireframe)
+function createBoundingBox() {
+    const boxWidth = 150;
+    const boxDepth = 150;
+    let maxHeight = 0;
+
+    // Find the highest point (y position) among the spaceships
+    spaceships.forEach(spaceship => {
+        if (spaceship.position.y + spaceship.scale.y * 12.5 > maxHeight) {
+            maxHeight = spaceship.position.y + spaceship.scale.y * 12.5; // Add scale factor to get accurate height
+        }
+    });
+
+    // Create the bounding box with adjusted height based on spaceship positions
+    const boxGeometry = new THREE.BoxGeometry(boxWidth, maxHeight, boxDepth);
+    const boxMaterial = new THREE.MeshBasicMaterial({
+        color: 0x00ff00,  // Color of the wireframe (green in this case)
+        wireframe: true,   // Enable wireframe mode
+        transparent: true, // Make it transparent
+        opacity: 0.2       // Set the opacity for transparency
+    });
+    const boundingBox = new THREE.Mesh(boxGeometry, boxMaterial);
+    boundingBox.position.set(0, maxHeight / 2, 0); // Position the box at the center (half of the max height)
+    scene.add(boundingBox);
+}
+
 function loadSpaceships() {
     for (let i = 0; i < numberOfAliens; i++) {
         loader.load(
             '/spaceship_lowpoly.glb', // Adjust this path to your spaceship model
             function (gltf) {
                 const model = gltf.scene;
-                model.scale.set(2, 2, 2); // Scale the model
+                model.scale.set(0.25, 0.25, 0.25); // Scale the model
                 model.position.set(
-                    Math.random() * 100 - 50, // Random x position within the plane's bounds
-                    0, // y position (on the ground)
-                    Math.random() * 100 - 50  // Random z position within the plane's bounds
+                    Math.random() * 150 - 50, // Random x position within the plane's bounds
+                    12.5, // y position (on the ground)
+                    Math.random() * 150 - 50  // Random z position within the plane's bounds
                 );
                 scene.add(model);
                 
                 spaceships.push(model);  // Store the model in the spaceships array
+
+                // After loading a spaceship, update the bounding box
+                createBoundingBox(); 
             },
             undefined,
             function (error) {
@@ -108,6 +143,7 @@ function loadSpaceships() {
         );
     }
 }
+
 
 
 // Animation loop
@@ -126,6 +162,10 @@ function animate() {
         if (moveLeft) velocity.x -= delta;
         if (moveRight) velocity.x += delta;
 
+        // Handle up and down movement
+        if (moveUp) camera.position.y += delta; // Move up
+        if (moveDown) camera.position.y -= delta; // Move down
+
         controls.moveRight(velocity.x);
         controls.moveForward(-velocity.z);
 
@@ -134,13 +174,10 @@ function animate() {
         velocity.z *= 0.9;
     }
 
-
     // Rotate each spaceship in the array
     spaceships.forEach(spaceship => {
         spaceship.rotation.y += 0.01;  // Rotate around the y-axis (you can adjust the speed)
     });
-
-    renderer.render(scene, camera);
 
     renderer.render(scene, camera);
 }
@@ -151,7 +188,6 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
-
 
 // Lighting
 const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
