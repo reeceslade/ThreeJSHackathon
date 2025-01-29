@@ -22,7 +22,6 @@ export function createPlane(yPosition, offset = 0) {
     scene.add(plane);
 }
 
-
 export function loadSpaceships(loader, scene) {
     for (let i = 0; i < numberOfSpaceships; i++) {
         loader.load(
@@ -30,31 +29,28 @@ export function loadSpaceships(loader, scene) {
             function (gltf) {
                 const model = gltf.scene;
                 model.scale.set(0.25, 0.25, 0.25); // Scale the model
-                model.position.set(
-                    Math.random() * 150 - 50, // Random x position within the plane's bounds
-                    12.5, // y position (on the ground)
-                    Math.random() * 150 - 50  // Random z position within the plane's bounds
-                );
+
+                // Calculate the bounding box before setting the position
+                const boundingBox = new THREE.Box3().setFromObject(model);
+                const shipWidth = boundingBox.max.x - boundingBox.min.x;
+                const shipHeight = boundingBox.max.y - boundingBox.min.y;
+                const shipDepth = boundingBox.max.z - boundingBox.min.z;
+
+                // Position the model randomly but within bounds, considering its size
+                const randomX = Math.random() * (100 - shipWidth) - 50; // Random x within bounds, accounting for width
+                const randomY = 12.5; // y position (on the ground)
+                const randomZ = Math.random() * (100 - shipDepth) - 50; // Random z within bounds, accounting for depth
+
+                model.position.set(randomX, randomY, randomZ);
                 scene.add(model);
 
                 spaceships.push(model);  // Store the model in the spaceships array
 
-                // Calculate the bounding box and height of the spaceship
-                const boundingBox = new THREE.Box3().setFromObject(model);
-                const shipHeight = boundingBox.max.y - boundingBox.min.y;
-                console.log('Spaceship height:', shipHeight); // Log the height of the spaceship
+                console.log('Spaceship dimensions:', shipWidth, shipHeight, shipDepth); // Log dimensions
 
                 // Create transparent boxes around the spaceship at both heights
                 createPlane(boundingBox.min.y, -5); // Move it further down
                 createPlane(boundingBox.max.y, 5);  // Move it further up
-
-                // Randomly position the spaceship within the bounding box
-                const randomX = Math.random() * (boundingBox.max.x - boundingBox.min.x) + boundingBox.min.x;
-                const randomZ = Math.random() * (boundingBox.max.z - boundingBox.min.z) + boundingBox.min.z;
-                const randomY = Math.random() * (boundingBox.max.y - boundingBox.min.y) + boundingBox.min.y;
-
-                // Position the spaceship inside the box
-                model.position.set(randomX, randomY, randomZ);
 
                 // Animate the spaceship (flying effect)
                 animateSpaceship(model, boundingBox, scene);
@@ -66,6 +62,7 @@ export function loadSpaceships(loader, scene) {
         );
     }
 }
+
 export function animateSpaceship(model, boundingBox) {
     // Random speed for movement
     const speed = Math.random() * 0.2 + 0.1; // Random speed between 0.1 and 0.3
