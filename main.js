@@ -33,40 +33,10 @@ scene.add(controls.getObject());
 // Generate road
 generateRoad(scene, 150, 20); // Creates roads in each direction, spaced 20 units apart
 
-// Movement variables
-let moveForward = false;
-let moveBackward = false;
-let moveLeft = false;
-let moveRight = false;
-let moveUp = false; // New variable for moving up
-let moveDown = false; // New variable for moving down
-
-// Event listeners for keyboard input
-document.addEventListener('keydown', (event) => {
-    switch (event.code) {
-        case 'KeyW': moveForward = true; break;
-        case 'KeyS': moveBackward = true; break;
-        case 'KeyA': moveLeft = true; break;
-        case 'KeyD': moveRight = true; break;
-        case 'Space': moveUp = true; break; // Move up with Space key
-        case 'ShiftLeft': moveDown = true; break; // Move down with Left Shift key
-    }
-});
-
-document.addEventListener('keyup', (event) => {
-    switch (event.code) {
-        case 'KeyW': moveForward = false; break;
-        case 'KeyS': moveBackward = false; break;
-        case 'KeyA': moveLeft = false; break;
-        case 'KeyD': moveRight = false; break;
-        case 'Space': moveUp = false; break; // Stop moving up when Space is released
-        case 'ShiftLeft': moveDown = false; break; // Stop moving down when Left Shift is released
-    }
-});
-
 
 const spaceships = [];  // Array to hold references to the spaceship models
 const numberOfSpaceships = 100;  // Adjust this number as needed
+
 function createPlane(yPosition, offset = 0) {
     const planeGeometry = new THREE.PlaneGeometry(200, 200); // Adjust the size of the plane
     const planeMaterial = new THREE.MeshBasicMaterial({
@@ -172,6 +142,8 @@ function animateSpaceship(model, boundingBox) {
     move();
 }
 
+// animation.js (or whatever the file is named)
+import { movement } from './movement.js'; // Adjust the path as needed
 
 // Animation loop
 const velocity = new THREE.Vector3();
@@ -184,14 +156,14 @@ function animate() {
     const delta = 0.1; // Adjust movement speed
 
     if (controls.isLocked) {
-        if (moveForward) velocity.z -= delta;
-        if (moveBackward) velocity.z += delta;
-        if (moveLeft) velocity.x -= delta;
-        if (moveRight) velocity.x += delta;
+        if (movement.moveForward) velocity.z -= delta;
+        if (movement.moveBackward) velocity.z += delta;
+        if (movement.moveLeft) velocity.x -= delta;
+        if (movement.moveRight) velocity.x += delta;
 
         // Handle up and down movement
-        if (moveUp) camera.position.y += delta; // Move up
-        if (moveDown) camera.position.y -= delta; // Move down
+        if (movement.moveUp) camera.position.y += delta; // Move up
+        if (movement.moveDown) camera.position.y -= delta; // Move down
 
         controls.moveRight(velocity.x);
         controls.moveForward(-velocity.z);
@@ -208,6 +180,8 @@ function animate() {
 
     renderer.render(scene, camera);
 }
+
+
 
 // Handle window resize
 window.addEventListener('resize', () => {
@@ -227,9 +201,8 @@ scene.add(light);
 // Load 3D Model
 const loader = new GLTFLoader();
 
-const numberOfAliens = 100; // Adjust this number as needed
-loadSpaceships();
 
+loadSpaceships();
 animate();
 
 
