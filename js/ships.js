@@ -8,13 +8,13 @@ export const numberOfSpaceships = 100;  // Adjust this number as needed
 export const loader = new GLTFLoader();  // Now properly instantiated after the import
 
 export function createPlane(yPosition, offset = 0) {
-    const planeGeometry = new THREE.PlaneGeometry(200, 200); // Adjust the size of the plane
+    const planeGeometry = new THREE.PlaneGeometry(100, 100); // Match the size of the walls (100x100)
     const planeMaterial = new THREE.MeshBasicMaterial({
-        color: 0x00ff00, // Use a green color for the box planes for visibility
+        color: 0x00ff00, // Green color for visibility
         side: THREE.DoubleSide, // Make the plane visible from both sides
         wireframe: true,
-        transparent: true, // Set transparency
-        opacity: 0.3 // Adjust the transparency level
+        transparent: true, // Transparency
+        opacity: 0.3 // Adjust transparency level
     });
     const plane = new THREE.Mesh(planeGeometry, planeMaterial);
     plane.rotation.x = -Math.PI / 2; // Rotate the plane to be horizontal
@@ -67,49 +67,9 @@ export function loadSpaceships(loader, scene) {
     }
 }
 
-
-// Create walls around the bounding box
-function createWalls() {
-    const wallGeometry = new THREE.PlaneGeometry(200, 200);
-    const wallMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide, wireframe: true });
-
-    const walls = {
-        left: new THREE.Mesh(wallGeometry, wallMaterial),
-        right: new THREE.Mesh(wallGeometry, wallMaterial),
-        front: new THREE.Mesh(wallGeometry, wallMaterial),
-        back: new THREE.Mesh(wallGeometry, wallMaterial),
-        top: new THREE.Mesh(wallGeometry, wallMaterial),
-        bottom: new THREE.Mesh(wallGeometry, wallMaterial)
-    };
-
-    // Set wall positions
-    walls.left.rotation.y = Math.PI / 2;
-    walls.left.position.set(-100, 50, 0);
-
-    walls.right.rotation.y = Math.PI / 2;
-    walls.right.position.set(100, 50, 0);
-
-    walls.front.position.set(0, 50, 100);
-    walls.front.rotation.x = -Math.PI / 2;
-
-    walls.back.position.set(0, 50, -100);
-    walls.back.rotation.x = Math.PI / 2;
-
-    walls.top.position.set(0, 100, 0);
-    walls.top.rotation.x = Math.PI / 2;
-
-    walls.bottom.position.set(0, 0, 0);
-    walls.bottom.rotation.x = -Math.PI / 2;
-
-    // Add walls to the scene
-    Object.values(walls).forEach(wall => scene.add(wall));
-}
-
-
 export function animateSpaceship(model, boundingBox, scene) {
     // Random speed for movement
     const speed = Math.random() * 0.2 + 0.1; // Random speed between 0.1 and 0.3
-    
 
     // Random direction of movement for the spaceship
     const direction = new THREE.Vector3(
@@ -118,24 +78,29 @@ export function animateSpaceship(model, boundingBox, scene) {
         Math.random() * 2 - 1  // Random z direction
     ).normalize();
 
+    // Define the boundaries of the plane
+    const planeSize = 100; // Assuming the plane is 100x100 units
+    const planeMinX = -planeSize / 2;
+    const planeMaxX = planeSize / 2;
+    const planeMinZ = -planeSize / 2;
+    const planeMaxZ = planeSize / 2;
+
     function move() {
         // Move the spaceship in the random direction
         model.position.add(direction.clone().multiplyScalar(speed));
 
-        // Ensure the spaceship stays within the bounding box, but prioritize lateral movement
-        if (model.position.x > boundingBox.max.x || model.position.x < boundingBox.min.x) {
-            // Reverse the lateral direction with a bit more movement in x
-            direction.x = Math.random() * 0.5 + 0.5 * (direction.x > 0 ? 1 : -1); 
+        // Check if the spaceship is outside the plane boundaries and reverse direction if necessary
+        if (model.position.x > planeMaxX || model.position.x < planeMinX) {
+            direction.x *= -1; // Reverse the x direction
         }
+        if (model.position.z > planeMaxZ || model.position.z < planeMinZ) {
+            direction.z *= -1; // Reverse the z direction
+        }
+
+        // Ensure the spaceship stays within the bounding box for the y-axis
         if (model.position.y > boundingBox.max.y || model.position.y < boundingBox.min.y) {
-            // Keep vertical movement minimal to avoid bouncing too much up and down
-            direction.y = Math.random() * 0.1 * (direction.y > 0 ? -1 : 1); // Slower bounce in y
+            direction.y *= -1; // Reverse the y direction
         }
-        if (model.position.z > boundingBox.max.z || model.position.z < boundingBox.min.z) {
-            // Reverse the lateral direction with a bit more movement in z
-            direction.z = Math.random() * 0.5 + 0.5 * (direction.z > 0 ? 1 : -1);
-        }
-        
 
         // Call the next frame
         requestAnimationFrame(move);
@@ -144,6 +109,3 @@ export function animateSpaceship(model, boundingBox, scene) {
     // Start the animation loop
     move();
 }
-
-
-
