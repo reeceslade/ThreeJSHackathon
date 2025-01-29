@@ -78,6 +78,31 @@ const light = new THREE.DirectionalLight(0xffffff, 2.5);
 light.position.set(1, 1, 1);
 scene.add(light);
 
+// Night-time Sky
+scene.background = new THREE.Color(0x000000); // Dark background for night
+
+// Modify the ambient light to simulate night-time
+ambientLight.intensity = 0.2; // Lower ambient light intensity for night-time feel
+
+// Simulate moonlight with a directional light (optional)
+const moonLight = new THREE.DirectionalLight(0x8888ff, 1.0); // Soft blue moonlight
+moonLight.position.set(-5, 5, -5); // Adjust position to simulate moon
+scene.add(moonLight);
+
+// Add stars to simulate a starry night (optional)
+const starGeometry = new THREE.SphereGeometry(0.1, 5, 5);
+const starMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+for (let i = 0; i < 1000; i++) {
+    const star = new THREE.Mesh(starGeometry, starMaterial);
+    star.position.set(
+        Math.random() * 1000 - 500, // Random x position
+        Math.random() * 500, // Random y position
+        Math.random() * 1000 - 500  // Random z position
+    );
+    scene.add(star);
+}
+
+
 // Load 3D Model
 const loader = new GLTFLoader();
 loadSpaceships(loader, scene);
