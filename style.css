@@ -57,8 +57,8 @@ body, html {
     line-height: 1.8;
   }
 
-  .start-menu button {
-    padding: 15px 30px;
+  .start-menu button, #resumeButton {
+    padding: 10px 20px;
     font-size: 18px;
     font-family: 'Arial', sans-serif;
     background-color: #ffcc00;
@@ -69,14 +69,26 @@ body, html {
     transition: background-color 0.3s ease;
   }
 
-  .start-menu button:hover {
+  .start-menu button:hover, #resumeButton:hover {
     background-color: #ff9900;
   }
 
-  .start-menu button:focus {
+  .start-menu button:focus, #resumeButton {
     outline: none;
   }
 
+  #pauseMenu {
+    display: none; 
+    position: absolute;
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 20px; 
+    font-size: 24px; 
+    text-align: center;
+}
 /* Crosshair styles */
 .crosshair {
     position: absolute;

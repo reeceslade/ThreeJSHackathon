@@ -2,11 +2,16 @@ import * as THREE from 'three';
 import { scene, camera, renderer, controls } from '/js/main.js';
 import { spaceships } from '/js/ships.js';
 import { movement } from '/js/movement.js';
+import { isPaused } from '/js/menu.js';
 
 export function animate() {
+    if (isPaused) {
+        requestAnimationFrame(animate); // Keep requesting animation frames but skip the logic if paused
+        return;
+    }
+
     requestAnimationFrame(animate);
 
-    
     const velocity = new THREE.Vector3();
 
     // Movement logic
