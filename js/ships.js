@@ -66,19 +66,18 @@ export function loadSpaceships(loader, scene) {
         );
     }
 }
-
-export function animateSpaceship(model, boundingBox, scene) {
+export function animateSpaceship(model) {
     // Random speed for movement
     const speed = Math.random() * 0.2 + 0.1; // Random speed between 0.1 and 0.3
 
     // Random direction of movement for the spaceship
     const direction = new THREE.Vector3(
         Math.random() * 2 - 1, // Random x direction
-        Math.random() * 2 - 1, // Random y direction (this can be toned down if you want less vertical movement)
+        0, // No vertical movement (y direction)
         Math.random() * 2 - 1  // Random z direction
     ).normalize();
 
-    // Define the boundaries of the plane
+    // Define the boundaries of the plane (100x100 units)
     const planeSize = 100; // Assuming the plane is 100x100 units
     const planeMinX = -planeSize / 2;
     const planeMaxX = planeSize / 2;
@@ -95,11 +94,6 @@ export function animateSpaceship(model, boundingBox, scene) {
         }
         if (model.position.z > planeMaxZ || model.position.z < planeMinZ) {
             direction.z *= -1; // Reverse the z direction
-        }
-
-        // Ensure the spaceship stays within the bounding box for the y-axis
-        if (model.position.y > boundingBox.max.y || model.position.y < boundingBox.min.y) {
-            direction.y *= -1; // Reverse the y direction
         }
 
         // Call the next frame
