@@ -66,14 +66,14 @@ export function loadSpaceships(loader, scene) {
         );
     }
 }
-export function animateSpaceship(model) {
+export function animateSpaceship(model, boundingBox) {
     // Random speed for movement
     const speed = Math.random() * 0.2 + 0.1; // Random speed between 0.1 and 0.3
 
     // Random direction of movement for the spaceship
     const direction = new THREE.Vector3(
         Math.random() * 2 - 1, // Random x direction
-        0, // No vertical movement (y direction)
+        (Math.random() * 0.2 - 0.1), // Slight vertical movement (y direction)
         Math.random() * 2 - 1  // Random z direction
     ).normalize();
 
@@ -94,6 +94,11 @@ export function animateSpaceship(model) {
         }
         if (model.position.z > planeMaxZ || model.position.z < planeMinZ) {
             direction.z *= -1; // Reverse the z direction
+        }
+
+        // Check if the spaceship is outside the bounding box's y-axis limits and reverse direction if necessary
+        if (model.position.y > boundingBox.max.y || model.position.y < boundingBox.min.y) {
+            direction.y *= -1; // Reverse the y direction
         }
 
         // Call the next frame
