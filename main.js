@@ -110,6 +110,19 @@ function loadSpaceships() {
 
                 // Upper box
                 createPlane(boundingBox.max.y, 5);  // Move it further up
+
+                // Randomly position the spaceship within the bounding box
+                const randomX = Math.random() * (boundingBox.max.x - boundingBox.min.x) + boundingBox.min.x;
+                const randomZ = Math.random() * (boundingBox.max.z - boundingBox.min.z) + boundingBox.min.z;
+                const randomY = Math.random() * (boundingBox.max.y - boundingBox.min.y) + boundingBox.min.y;
+
+                // Position the spaceship inside the box
+                model.position.set(randomX, randomY, randomZ);
+
+                // Animate the spaceship (flying effect)
+                animateSpaceship(model, boundingBox);
+
+
             },
             undefined,
             function (error) {
@@ -117,6 +130,43 @@ function loadSpaceships() {
             }
         );
     }
+}
+
+
+
+
+function animateSpaceship(model, boundingBox) {
+    // Random speed for movement
+    const speed = Math.random() * 0.02 + 0.01; // Random speed between 0.01 and 0.03
+
+    // Random direction of movement for the spaceship
+    const direction = new THREE.Vector3(
+        Math.random() * 2 - 1, // Random x direction
+        Math.random() * 2 - 1, // Random y direction
+        Math.random() * 2 - 1  // Random z direction
+    ).normalize();
+
+    function move() {
+        // Move the spaceship in the random direction
+        model.position.add(direction.clone().multiplyScalar(speed));
+
+        // Ensure the spaceship stays within the bounding box
+        if (model.position.x > boundingBox.max.x || model.position.x < boundingBox.min.x) {
+            direction.x = -direction.x; // Reverse direction on x-axis if out of bounds
+        }
+        if (model.position.y > boundingBox.max.y || model.position.y < boundingBox.min.y) {
+            direction.y = -direction.y; // Reverse direction on y-axis if out of bounds
+        }
+        if (model.position.z > boundingBox.max.z || model.position.z < boundingBox.min.z) {
+            direction.z = -direction.z; // Reverse direction on z-axis if out of bounds
+        }
+
+        // Call the next frame
+        requestAnimationFrame(move);
+    }
+
+    // Start the animation loop
+    move();
 }
 
 // Animation loop
