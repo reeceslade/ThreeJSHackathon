@@ -5,6 +5,7 @@ import { scene } from './main.js'; // Adjust the path as needed
 export const spaceships = [];  // Array to hold references to the spaceship models
 export const numberOfSpaceships = 100;  // Adjust this number as needed
 
+export const loader = new GLTFLoader();  // Now properly instantiated after the import
 
 export function createPlane(yPosition, offset = 0) {
     const planeGeometry = new THREE.PlaneGeometry(200, 200); // Adjust the size of the plane
