@@ -83,6 +83,33 @@ building.add(roof);
 scene.add(building);
 */ 
 
+const spaceships = [];  // Array to hold references to the spaceship models
+
+function loadSpaceships() {
+    for (let i = 0; i < numberOfAliens; i++) {
+        loader.load(
+            '/spaceship_lowpoly.glb', // Adjust this path to your spaceship model
+            function (gltf) {
+                const model = gltf.scene;
+                model.scale.set(2, 2, 2); // Scale the model
+                model.position.set(
+                    Math.random() * 100 - 50, // Random x position within the plane's bounds
+                    0, // y position (on the ground)
+                    Math.random() * 100 - 50  // Random z position within the plane's bounds
+                );
+                scene.add(model);
+                
+                spaceships.push(model);  // Store the model in the spaceships array
+            },
+            undefined,
+            function (error) {
+                console.error(error);
+            }
+        );
+    }
+}
+
+
 // Animation loop
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
@@ -107,6 +134,14 @@ function animate() {
         velocity.z *= 0.9;
     }
 
+
+    // Rotate each spaceship in the array
+    spaceships.forEach(spaceship => {
+        spaceship.rotation.y += 0.01;  // Rotate around the y-axis (you can adjust the speed)
+    });
+
+    renderer.render(scene, camera);
+
     renderer.render(scene, camera);
 }
 
@@ -128,18 +163,36 @@ scene.add(light);
 
 // Load 3D Model
 const loader = new GLTFLoader();
-loader.load(
-  '/alien_creature.glb', // Adjust this path to your model
-  function (gltf) {
-    const model = gltf.scene;
-    scene.add(model);
-    model.scale.set(2, 2, 2)
-    model.position.set(0, 0, 0); // Adjust position if needed
-  },
-  undefined,
-  function (error) {
-    console.error(error);
-  }
-);
+
+const numberOfAliens = 100; // Adjust this number as needed
+
+/*
+const numberOfAliens = 10; // Adjust this number as needed
+
+function loadAliens() {
+    for (let i = 0; i < numberOfAliens; i++) {
+        loader.load(
+            '/alien_creature.glb', // Adjust this path to your model
+            function (gltf) {
+                const model = gltf.scene;
+                model.scale.set(2, 2, 2); // Scale the model
+                model.position.set(
+                    Math.random() * 100 - 50, // Random x position within the plane's bounds
+                    0, // y position (on the ground)
+                    Math.random() * 100 - 50  // Random z position within the plane's bounds
+                );
+                scene.add(model);
+            },
+            undefined,
+            function (error) {
+                console.error(error);
+            }
+        );
+    }
+}
+*/
+// Call to load aliens
+//loadAliens();
+loadSpaceships();
 
 animate();
