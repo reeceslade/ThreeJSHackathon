@@ -137,12 +137,12 @@ function loadSpaceships() {
 
 function animateSpaceship(model, boundingBox) {
     // Random speed for movement
-    const speed = Math.random() * 0.02 + 0.01; // Random speed between 0.01 and 0.03
+    const speed = Math.random() * 0.2 + 0.1; // Random speed between 0.1 and 0.3
 
     // Random direction of movement for the spaceship
     const direction = new THREE.Vector3(
         Math.random() * 2 - 1, // Random x direction
-        Math.random() * 2 - 1, // Random y direction
+        Math.random() * 2 - 1, // Random y direction (this can be toned down if you want less vertical movement)
         Math.random() * 2 - 1  // Random z direction
     ).normalize();
 
@@ -150,15 +150,18 @@ function animateSpaceship(model, boundingBox) {
         // Move the spaceship in the random direction
         model.position.add(direction.clone().multiplyScalar(speed));
 
-        // Ensure the spaceship stays within the bounding box
+        // Ensure the spaceship stays within the bounding box, but prioritize lateral movement
         if (model.position.x > boundingBox.max.x || model.position.x < boundingBox.min.x) {
-            direction.x = -direction.x; // Reverse direction on x-axis if out of bounds
+            // Reverse the lateral direction with a bit more movement in x
+            direction.x = Math.random() * 0.5 + 0.5 * (direction.x > 0 ? 1 : -1); 
         }
         if (model.position.y > boundingBox.max.y || model.position.y < boundingBox.min.y) {
-            direction.y = -direction.y; // Reverse direction on y-axis if out of bounds
+            // Keep vertical movement minimal to avoid bouncing too much up and down
+            direction.y = Math.random() * 0.1 * (direction.y > 0 ? -1 : 1); // Slower bounce in y
         }
         if (model.position.z > boundingBox.max.z || model.position.z < boundingBox.min.z) {
-            direction.z = -direction.z; // Reverse direction on z-axis if out of bounds
+            // Reverse the lateral direction with a bit more movement in z
+            direction.z = Math.random() * 0.5 + 0.5 * (direction.z > 0 ? 1 : -1);
         }
 
         // Call the next frame
@@ -168,6 +171,7 @@ function animateSpaceship(model, boundingBox) {
     // Start the animation loop
     move();
 }
+
 
 // Animation loop
 const velocity = new THREE.Vector3();
