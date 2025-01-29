@@ -89,9 +89,10 @@ const moonLight = new THREE.DirectionalLight(0x8888ff, 1.0); // Soft blue moonli
 moonLight.position.set(-5, 5, -5); // Adjust position to simulate moon
 scene.add(moonLight);
 
-// Add stars to simulate a starry night (optional)
-const starGeometry = new THREE.SphereGeometry(0.1, 5, 5);
-const starMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+// Add stars to simulate a starry night
+const starGeometry = new THREE.SphereGeometry(0.5, 5, 5); // Increase size slightly for better visibility
+const starMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, emissive: 0xffffff }); // Make stars emissive for better glow effect
+
 for (let i = 0; i < 1000; i++) {
     const star = new THREE.Mesh(starGeometry, starMaterial);
     star.position.set(
