@@ -14,7 +14,9 @@ body, html {
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    color: white;
+    color: black;
+    background-color: white;
+    opacity: 0.9;
 }
 
 .start-menu button {
