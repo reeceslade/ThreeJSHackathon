@@ -4,6 +4,7 @@ import { scene } from '/js/main.js'; // Adjust the path as needed
 
 export const spaceships = [];  // Array to hold references to the spaceship models
 export const numberOfSpaceships = 100;  // Adjust this number as needed
+export const collidingPairs = new Set(); // Tracks pairs of colliding spaceships
 
 export const loader = new GLTFLoader();  // Now properly instantiated after the import
 
@@ -29,31 +30,41 @@ export function loadSpaceships(loader, scene) {
             function (gltf) {
                 const model = gltf.scene;
                 model.scale.set(0.25, 0.25, 0.25); // Scale the model
-
-                // Calculate the bounding box before setting the position
+        
+                // Calculate the bounding box
                 const boundingBox = new THREE.Box3().setFromObject(model);
-                const shipWidth = boundingBox.max.x - boundingBox.min.x;
-                const shipHeight = boundingBox.max.y - boundingBox.min.y;
-                const shipDepth = boundingBox.max.z - boundingBox.min.z;
-
+        
+                // Create a wireframe box around the spaceship
+                const boxGeometry = new THREE.BoxGeometry(
+                    boundingBox.max.x - boundingBox.min.x, // Width
+                    boundingBox.max.y - boundingBox.min.y, // Height
+                    boundingBox.max.z - boundingBox.min.z  // Depth
+                );
+                const boxMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x00ff00, // Green color for visibility
+                    wireframe: true // Enable wireframe
+                });
+                const wireframeBox = new THREE.Mesh(boxGeometry, boxMaterial);
+        
+                // Position the wireframe box at the same position as the spaceship
+                wireframeBox.position.copy(model.position);
+        
+                // Add the wireframe box to the scene
+                scene.add(wireframeBox);
+        
                 // Position the model randomly but within bounds, considering its size
-                const randomX = Math.random() * (100 - shipWidth) - 50; // Random x within bounds, accounting for width
+                const randomX = Math.random() * (100 - (boundingBox.max.x - boundingBox.min.x)) - 50;
                 const randomY = 12.5; // y position (on the ground)
-                const randomZ = Math.random() * (100 - shipDepth) - 50; // Random z within bounds, accounting for depth
-
+                const randomZ = Math.random() * (100 - (boundingBox.max.z - boundingBox.min.z)) - 50;
+        
                 model.position.set(randomX, randomY, randomZ);
+                wireframeBox.position.set(randomX, randomY, randomZ); // Match the wireframe box position
+        
                 scene.add(model);
-
                 spaceships.push(model);  // Store the model in the spaceships array
-
-                console.log('Spaceship dimensions:', shipWidth, shipHeight, shipDepth); // Log dimensions
-
-                // Create transparent boxes around the spaceship at both heights
-                createPlane(boundingBox.min.y, -5); // Move it further down
-                createPlane(boundingBox.max.y, 5);  // Move it further up
-
+        
                 // Animate the spaceship (flying effect)
-                animateSpaceship(model, boundingBox, scene);
+                animateSpaceship(model, wireframeBox, boundingBox); // Pass the wireframeBox to the animate function
             },
             undefined,
             function (error) {
@@ -63,7 +74,8 @@ export function loadSpaceships(loader, scene) {
     }
 }
 
-export function animateSpaceship(model, boundingBox) {
+
+export function animateSpaceship(model, wireframeBox, boundingBox) {
     // Random speed for movement
     const speed = Math.random() * 0.2 + 0.1; // Random speed between 0.1 and 0.3
 
@@ -85,6 +97,9 @@ export function animateSpaceship(model, boundingBox) {
         // Move the spaceship in the random direction
         model.position.add(direction.clone().multiplyScalar(speed));
 
+        // Update the wireframe box position to match the spaceship
+        wireframeBox.position.copy(model.position);
+
         // Check if the spaceship is outside the plane boundaries and reverse direction if necessary
         if (model.position.x > planeMaxX || model.position.x < planeMinX) {
             direction.x *= -1; // Reverse the x direction
@@ -105,3 +120,4 @@ export function animateSpaceship(model, boundingBox) {
     // Start the animation loop
     move();
 }
+
