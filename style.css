@@ -7,23 +7,75 @@ body, html {
     font-family: Arial, sans-serif;
 }
 
-/* Start menu styles */
 .start-menu {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    color: black;
-    background-color: white;
-    opacity: 0.9;
-}
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    padding: 30px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  }
 
-.start-menu button {
-    padding: 10px 20px;
-    font-size: 16px;
+  .start-menu h1 {
+    font-family: 'Arial', sans-serif;
+    font-size: 2rem;
+    margin-bottom: 15px;
+    color: #ffcc00;
+  }
+
+  .start-menu h2 {
+    font-family: 'Arial', sans-serif;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #ffcc00;
+  }
+
+  .intro-text {
+    font-family: 'Arial', sans-serif;
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+
+  .controls-list {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-family: 'Arial', sans-serif;
+    font-size: 1.1rem;
+    color: #f0f0f0;
+  }
+
+  .controls-list li {
+    line-height: 1.8;
+  }
+
+  .start-menu button {
+    padding: 15px 30px;
+    font-size: 18px;
+    font-family: 'Arial', sans-serif;
+    background-color: #ffcc00;
+    color: #333;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-}
+    transition: background-color 0.3s ease;
+  }
+
+  .start-menu button:hover {
+    background-color: #ff9900;
+  }
+
+  .start-menu button:focus {
+    outline: none;
+  }
 
 /* Crosshair styles */
 .crosshair {
