@@ -124,7 +124,7 @@ scene.add(newCylinder);
 
 
 
-// Create a function to create text textures with automatic line breaks
+// Create a function to create text textures with automatic line breaks and centering
 function createTextTexture(text) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -135,7 +135,7 @@ function createTextTexture(text) {
     canvas.width = maxWidth;
     canvas.height = 200; // Height will expand dynamically based on text
     ctx.font = `bold ${fontSize}px Arial`;
-    ctx.fillStyle = 'blue';
+    ctx.fillStyle = 'red';
     
     // Break the text into lines that fit within the maxWidth
     const words = text.split(' ');
@@ -155,10 +155,20 @@ function createTextTexture(text) {
     });
     if (currentLine) lines.push(currentLine); // Push the last line
     
-    // Write lines to the canvas
+    // Calculate the total text height and horizontal centering
     const lineHeight = fontSize * 1.2; // Space between lines
+    const totalTextHeight = lines.length * lineHeight;
+    
+    // Center the text horizontally and vertically
+    const centerX = (canvas.width - ctx.measureText(text).width) / 2; // Horizontal center
+    const centerY = (canvas.height - totalTextHeight) / 2; // Vertical center
+    
+    // Write lines to the canvas, adjusting for the center
     lines.forEach((line, index) => {
-        ctx.fillText(line, 10, (index + 1) * lineHeight); // Adjust vertical position for each line
+        const lineWidth = ctx.measureText(line).width;
+        const lineX = (canvas.width - lineWidth) / 2; // Center each line horizontally
+        const lineY = centerY + (index + 1) * lineHeight; // Adjust vertical position
+        ctx.fillText(line, lineX, lineY);
     });
     
     // Create a texture from the canvas
