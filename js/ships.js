@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { scene } from '/js/main.js'; // Adjust the path as needed
+import { scene, textPlanes, createTextTexture } from '/js/main.js'; // Adjust the path as needed
 
 export const spaceships = [];  // Array to hold references to the spaceship models
 export const numberOfSpaceships = 100;  // Adjust this number as needed
@@ -75,6 +75,10 @@ export function loadSpaceships(loader, scene) {
     }
 }
 
+
+export let collisionCount = 0;
+export let totalCrashCount = 0; // Variable to track total crash counts
+
 export function checkCollisions() {
     for (let i = 0; i < spaceships.length; i++) {
         for (let j = i + 1; j < spaceships.length; j++) {
@@ -89,17 +93,36 @@ export function checkCollisions() {
                 const pairKey = `${i}-${j}`;
                 if (!collidingPairs.has(pairKey)) {
                     collidingPairs.add(pairKey);
-                  //  console.log(`Collision detected between spaceship ${i} and spaceship ${j}`);
+                    collisionCount++; // Increment collision count when collision is detected
                 }
             } else {
                 collidingPairs.delete(`${i}-${j}`);
             }
         }
     }
+
+    // Check if the collisionCount has reached 200 or more
+    if (collisionCount >= 200) {
+        totalCrashCount += Math.floor(collisionCount / 200); // Increment totalCrashCount for each 200 collisions
+        console.log(`Crash count: ${totalCrashCount}`); // Log the total crash count
+        collisionCount = collisionCount % 200; // Keep the remainder of collisionCount for the next cycle
+    }
+
+    // Update the text on all text planes
+    // Update the text on all text planes
+    textPlanes.forEach((textPlane) => {
+        // Update the text texture with the pretext
+        const text = `Total Spaceship Crashes: ${totalCrashCount}`; // Add pretext before the count
+        const { texture, width, height } = createTextTexture(text);
+        textPlane.material.map = texture; // Update the material texture with the new one
+        textPlane.material.needsUpdate = true; // Flag the material for update
+    });
+
 }
 
-// Run collision detection separately from rendering loop (every 200ms)
 setInterval(checkCollisions, 200);
+
+
 
 export function animateSpaceship(model, wireframeBox, boundingBox) {
     // Random speed for movement

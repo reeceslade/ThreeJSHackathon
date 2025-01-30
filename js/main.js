@@ -4,6 +4,9 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import {generateRoad } from '/js/generateRoad.js';
 import { loadSpaceships } from '/js/ships.js';
 import { animate } from '/js/animate.js';
+import { collisionCount } from '/js/ships.js'; // Adjust the path to your file
+import { totalCrashCount } from '/js/ships.js';
+
 
 export { camera, renderer, controls, animate, scene, loader };
 
@@ -142,7 +145,7 @@ scene.add(newCylinder);
 
 
 // Create a function to create text textures with automatic line breaks and centering
-function createTextTexture(text) {
+export function createTextTexture(text) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     
@@ -241,9 +244,11 @@ function getRandomPositionWithinFloor(objectWidth, objectDepth) {
     return { x: randomX, z: randomZ };
 }
 
+export let textPlanes = []; // Array to store references to text planes
+
 function placeSignDuplicates(numSigns) {
-    const cubeWidth = 8;
-    const cubeHeight = 5;
+    const cubeWidth = 2;
+    const cubeHeight = 1.25;
     const cubeDepth = 1;
     
     for (let i = 0; i < numSigns; i++) {
@@ -253,28 +258,29 @@ function placeSignDuplicates(numSigns) {
         const signGeometry = new THREE.BoxGeometry(cubeWidth, cubeHeight, cubeDepth);
         const signMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
         const sign = new THREE.Mesh(signGeometry, signMaterial);
-        sign.position.set(x, cubeHeight / 2, z);
+        sign.position.set(x, cubeHeight / 2 + 5, z);
         scene.add(sign);
 
-        // Create text for the sign
-        const text = "City Population: 10,000"; // Example text 
+        // Create text for the sign initially with a placeholder value
+        const text = `Total Crashes: ${totalCrashCount}`; // Add pretext before the count
+
         const { texture, width, height } = createTextTexture(text);
 
         // Create text plane
         const textPlaneGeometry = new THREE.PlaneGeometry(width / 50, height / 50);
         const textPlaneMaterial = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
         const textPlane = new THREE.Mesh(textPlaneGeometry, textPlaneMaterial);
-        textPlane.position.set(x, cubeHeight / 2, z + 0.55); // Position in front of the sign
+        textPlane.position.set(x, cubeHeight / 2 + 5, z + 0.55); // Position in front of the sign
 
         scene.add(textPlane);
+
+        // Store reference to the text plane to update it later
+        textPlanes.push(textPlane);
     }
 }
 
-placeSignDuplicates(5); // Place 5 duplicate signs
 
-
-
-
+placeSignDuplicates(1); // Place 5 duplicate signs
 
 // Load 3D Model
 const loader = new GLTFLoader();
