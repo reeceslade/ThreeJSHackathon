@@ -41,8 +41,9 @@ export function loadSpaceships(loader, scene) {
                     boundingBox.max.z - boundingBox.min.z  // Depth
                 );
                 const boxMaterial = new THREE.MeshBasicMaterial({
-                    color: 0x00ff00, // Green color for visibility
-                    wireframe: true // Enable wireframe
+                    color: new THREE.Color(0x000000), // Set the base color (black in this case)
+                    transparent: true, // Enable transparency
+                    opacity: 0 // Set opacity to 0 for full transparency
                 });
                 const wireframeBox = new THREE.Mesh(boxGeometry, boxMaterial);
         
@@ -88,7 +89,7 @@ export function checkCollisions() {
                 const pairKey = `${i}-${j}`;
                 if (!collidingPairs.has(pairKey)) {
                     collidingPairs.add(pairKey);
-                    console.log(`Collision detected between spaceship ${i} and spaceship ${j}`);
+                  //  console.log(`Collision detected between spaceship ${i} and spaceship ${j}`);
                 }
             } else {
                 collidingPairs.delete(`${i}-${j}`);
@@ -107,7 +108,7 @@ export function animateSpaceship(model, wireframeBox, boundingBox) {
     // Random direction of movement for the spaceship
     const direction = new THREE.Vector3(
         Math.random() * 2 - 1, // Random x direction
-        (Math.random() * 0.2 - 0.1), // Slight vertical movement (y direction)
+        (0), // Slight vertical movement (y direction)
         Math.random() * 2 - 1  // Random z direction
     ).normalize();
 
