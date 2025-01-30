@@ -15,7 +15,7 @@ export function animate() {
     const velocity = new THREE.Vector3();
 
     // Movement logic
-    const delta = 0.1; // Adjust movement speed
+    const delta = 0.5; // Adjust movement speed
 
     if (controls.isLocked) {
         if (movement.moveForward) velocity.z -= delta;

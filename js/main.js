@@ -34,28 +34,45 @@ const wallThickness = 1; // Thickness of the walls
 
 // Wall on the left
 const leftWallGeometry = new THREE.BoxGeometry(wallThickness, wallHeight, 100);
-const leftWallMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // Green color
+const leftWallMaterial = new THREE.MeshBasicMaterial({
+    color: new THREE.Color(0x000000), // Set the base color (black in this case)
+    transparent: true, // Enable transparency
+    opacity: 0 // Set opacity to 0 for full transparency
+  });
+  
 const leftWall = new THREE.Mesh(leftWallGeometry, leftWallMaterial);
 leftWall.position.set(-50, wallHeight / 2, 0); // Position left wall
 scene.add(leftWall);
 
 // Wall on the right
 const rightWallGeometry = new THREE.BoxGeometry(wallThickness, wallHeight, 100);
-const rightWallMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // Green color
+const rightWallMaterial = new THREE.MeshBasicMaterial({
+    color: new THREE.Color(0x000000), // Set the base color (black in this case)
+    transparent: true, // Enable transparency
+    opacity: 0 // Set opacity to 0 for full transparency
+  });
 const rightWall = new THREE.Mesh(rightWallGeometry, rightWallMaterial);
 rightWall.position.set(50, wallHeight / 2, 0); // Position right wall
 scene.add(rightWall);
 
 // Wall at the front
 const frontWallGeometry = new THREE.BoxGeometry(100, wallHeight, wallThickness);
-const frontWallMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // Green color
+const frontWallMaterial= new THREE.MeshBasicMaterial({
+    color: new THREE.Color(0x000000), // Set the base color (black in this case)
+    transparent: true, // Enable transparency
+    opacity: 0 // Set opacity to 0 for full transparency
+  });
 const frontWall = new THREE.Mesh(frontWallGeometry, frontWallMaterial);
 frontWall.position.set(0, wallHeight / 2, -50); // Position front wall
 scene.add(frontWall);
 
 // Wall at the back
 const backWallGeometry = new THREE.BoxGeometry(100, wallHeight, wallThickness);
-const backWallMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // Green color
+const backWallMaterial = new THREE.MeshBasicMaterial({
+    color: new THREE.Color(0x000000), // Set the base color (black in this case)
+    transparent: true, // Enable transparency
+    opacity: 0 // Set opacity to 0 for full transparency
+  });
 const backWall = new THREE.Mesh(backWallGeometry, backWallMaterial);
 backWall.position.set(0, wallHeight / 2, 50); // Position back wall
 scene.add(backWall);

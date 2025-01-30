@@ -3,7 +3,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { scene } from '/js/main.js'; // Adjust the path as needed
 
 export const spaceships = [];  // Array to hold references to the spaceship models
-export const numberOfSpaceships = 10;  // Adjust this number as needed
+export const numberOfSpaceships = 100;  // Adjust this number as needed
 export const collidingPairs = new Set(); // Tracks pairs of colliding spaceships
 
 export const loader = new GLTFLoader();  // Now properly instantiated after the import
@@ -80,7 +80,7 @@ export function checkCollisions() {
             const shipA = spaceships[i];
             const shipB = spaceships[j];
 
-            // Update the bounding boxes to the current positions
+            // Update bounding boxes without affecting rendering
             shipA.boundingBox.setFromObject(shipA.model);
             shipB.boundingBox.setFromObject(shipB.model);
 
@@ -91,14 +91,14 @@ export function checkCollisions() {
                     console.log(`Collision detected between spaceship ${i} and spaceship ${j}`);
                 }
             } else {
-                const pairKey = `${i}-${j}`;
-                if (collidingPairs.has(pairKey)) {
-                    collidingPairs.delete(pairKey);
-                }
+                collidingPairs.delete(`${i}-${j}`);
             }
         }
     }
 }
+
+// Run collision detection separately from rendering loop (every 200ms)
+setInterval(checkCollisions, 200);
 
 export function animateSpaceship(model, wireframeBox, boundingBox) {
     // Random speed for movement
@@ -137,9 +137,6 @@ export function animateSpaceship(model, wireframeBox, boundingBox) {
         if (model.position.y > boundingBox.max.y || model.position.y < boundingBox.min.y) {
             direction.y *= -1; // Reverse the y direction
         }
-
-        // Check for collisions
-        checkCollisions();
 
         // Call the next frame
         requestAnimationFrame(move);
