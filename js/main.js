@@ -133,7 +133,7 @@ function createTextTexture(text) {
     
     // Set canvas size and font properties
     const fontSize = 20;
-    canvas.width = 400;
+    canvas.width = 350;
     canvas.height = 200;
     ctx.font = `bold ${fontSize}px Arial`;
     ctx.fillStyle = 'blue';
@@ -144,8 +144,27 @@ function createTextTexture(text) {
     return { texture, width: canvas.width, height: canvas.height };
 }
 
-// Create text for the cube
-const text = "In Front of Cube";
+const fakeNewsHeadlines = [
+    { headline: "Elon Musk Declares Mars the 51st State, Promises Free WiFi!", date: "2032-07-15", source: "Galactic Times" },
+    { headline: "Neuralink Malfunctions: Man Orders 10,000 Pizzas Just by Thinking!", date: "2029-04-01", source: "Tech Paradox" },
+    { headline: "AI Becomes Self-Aware, Decides to Spend Life Making Memes Instead of World Domination!", date: "2040-09-23", source: "Cyber Satire" },
+    { headline: "Scientists Discover Time Travel, First Tourist Ends Up in Dinosaur’s Lunch Menu!", date: "2051-06-08", source: "Quantum Daily" },
+    { headline: "Government Announces Free Healthcare, Turns Out to Be a Google Ad!", date: "2035-11-29", source: "Reality Check News" }
+];
+
+
+// Function to get a random item from an array
+function getRandomHeadline() {
+    const randomIndex = Math.floor(Math.random() * fakeNewsHeadlines.length); // Get a random index
+    return fakeNewsHeadlines[randomIndex].headline; // Return the headline at the random index
+}
+
+// Create text for the cube using a random headline
+const text = getRandomHeadline(); // Get a random headline
+console.log("Random headline:", text); // Log the random headline to check
+
+// Proceed with the rest of your code to display this random headline
+
 
 // Create the texture for the text
 const { texture, width, height } = createTextTexture(text);
