@@ -76,20 +76,30 @@ export function loadSpaceships(loader, scene) {
 }
 
 
-
 export let collisionCount = 0;
 export let totalCrashCount = 0; // Variable to track total crash counts
 let hasInteracted = false;
 export const collisionSound = new Audio('/Big_Explosion_Sound_Effect.mp3');  // Path to your MP3 file
+export const backgroundMusic = new Audio('/Sci-Fi_Weapons_2_Sound_Effects_Futuristic_Cyber_Weapon_Sci-Fi_Sound_Effects.mp3');  // Path to your new MP3 file
 
 collisionSound.volume = 0.5;
+backgroundMusic.volume = 0.2;  // Set the background music volume (adjust as needed)
+backgroundMusic.loop = true;  // Set background music to loop
 
+// Play sounds when the user first interacts
 document.addEventListener('click', () => {
     if (!hasInteracted) {
         hasInteracted = true;
-        collisionSound.play();  // Allow the first click to enable sound
+        backgroundMusic.play();  // Start playing the background music on first interaction
     }
 });
+
+// Function to handle collision sound without overlap
+function playCollisionSound() {
+    if (collisionSound.paused || collisionSound.ended) {
+        collisionSound.play();  // Play collision sound only if it's not currently playing
+    }
+}
 
 export function checkCollisions() {
     for (let i = 0; i < spaceships.length; i++) {
@@ -109,7 +119,7 @@ export function checkCollisions() {
 
                     // Play sound when collision occurs, only if interaction has happened
                     if (hasInteracted) {
-                        collisionSound.play();  // Play the collision sound
+                        playCollisionSound();  // Play the collision sound
                     }
                 }
             } else {
@@ -136,8 +146,6 @@ export function checkCollisions() {
 }
 
 setInterval(checkCollisions, 200);
-
-
 
 export function animateSpaceship(model, wireframeBox, boundingBox) {
     // Random speed for movement
