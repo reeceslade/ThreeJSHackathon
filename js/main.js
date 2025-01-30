@@ -210,6 +210,51 @@ textPlane.position.set(0, 5, 0.55); // Adjust position as needed
 // Add the text plane to the scene
 scene.add(textPlane);
 
+function getRandomPositionWithinFloor(objectWidth, objectDepth) {
+    const floorSize = 100; // The size of your floor plane
+
+    const xMin = -floorSize / 2 + objectWidth / 2;
+    const xMax = floorSize / 2 - objectWidth / 2;
+    const zMin = -floorSize / 2 + objectDepth / 2;
+    const zMax = floorSize / 2 - objectDepth / 2;
+
+    const randomX = Math.random() * (xMax - xMin) + xMin;
+    const randomZ = Math.random() * (zMax - zMin) + zMin;
+    
+    return { x: randomX, z: randomZ };
+}
+
+function placeSignDuplicates(numSigns) {
+    const cubeWidth = 8;
+    const cubeHeight = 5;
+    const cubeDepth = 1;
+    
+    for (let i = 0; i < numSigns; i++) {
+        const { x, z } = getRandomPositionWithinFloor(cubeWidth, cubeDepth);
+
+        // Create cube (sign background)
+        const signGeometry = new THREE.BoxGeometry(cubeWidth, cubeHeight, cubeDepth);
+        const signMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const sign = new THREE.Mesh(signGeometry, signMaterial);
+        sign.position.set(x, cubeHeight / 2, z);
+        scene.add(sign);
+
+        // Create text for the sign
+        const text = getRandomHeadline();
+        const { texture, width, height } = createTextTexture(text);
+
+        // Create text plane
+        const textPlaneGeometry = new THREE.PlaneGeometry(width / 50, height / 50);
+        const textPlaneMaterial = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+        const textPlane = new THREE.Mesh(textPlaneGeometry, textPlaneMaterial);
+        textPlane.position.set(x, cubeHeight / 2, z + 0.55); // Position in front of the sign
+
+        scene.add(textPlane);
+    }
+}
+
+placeSignDuplicates(5); // Place 5 duplicate signs
+
 
 
 
