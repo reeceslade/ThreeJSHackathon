@@ -25,6 +25,7 @@ const floorGeometry = new THREE.PlaneGeometry(100, 100);
 const floorMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc, side: THREE.DoubleSide });
 const floor = new THREE.Mesh(floorGeometry, floorMaterial);
 floor.rotation.x = -Math.PI / 2; // Rotate the floor to be horizontal
+console.log("floor", floor.position)
 scene.add(floor);
 
 // Create walls
@@ -102,6 +103,68 @@ for (let i = 0; i < 1000; i++) {
     );
     scene.add(star);
 }
+
+const geometry = new THREE.BoxGeometry(8, 5, 1); 
+const material = new THREE.MeshBasicMaterial({ color: 0xffffff }); 
+const cube = new THREE.Mesh(geometry, material); 
+
+cube.position.y = 5;
+scene.add(cube);
+
+const newGeometry = new THREE.CylinderGeometry(0.1, 0.1, 5, 32);  
+const newMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });  
+const newCylinder = new THREE.Mesh(newGeometry, newMaterial);
+
+console.log(newCylinder.position);
+
+// Positioning it near the first cube
+newCylinder.position.set(0, 1, 0);  
+
+scene.add(newCylinder);
+
+
+
+
+
+// Create a function to create text textures
+function createTextTexture(text) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Set canvas size and font properties
+    const fontSize = 20;
+    canvas.width = 400;
+    canvas.height = 200;
+    ctx.font = `bold ${fontSize}px Arial`;
+    ctx.fillStyle = 'blue';
+    ctx.fillText(text, 10, 40); // Add text to the canvas
+    
+    // Create a texture from the canvas
+    const texture = new THREE.CanvasTexture(canvas);
+    return { texture, width: canvas.width, height: canvas.height };
+}
+
+// Create text for the cube
+const text = "In Front of Cube";
+
+// Create the texture for the text
+const { texture, width, height } = createTextTexture(text);
+
+// Create a plane geometry for the text
+const planeGeometry = new THREE.PlaneGeometry(width / 50, height / 50); // Adjust size based on text dimensions
+const planeMaterial = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+
+// Create the plane and position it in front of the cube
+const textPlane = new THREE.Mesh(planeGeometry, planeMaterial);
+
+// Position the text in front of the cube and center it
+textPlane.position.set(0, 5, 0.55); // Adjust position as needed
+
+// Add the text plane to the scene
+scene.add(textPlane);
+
+
+
 
 
 // Load 3D Model
