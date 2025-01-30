@@ -76,8 +76,20 @@ export function loadSpaceships(loader, scene) {
 }
 
 
+
 export let collisionCount = 0;
 export let totalCrashCount = 0; // Variable to track total crash counts
+let hasInteracted = false;
+export const collisionSound = new Audio('/Big_Explosion_Sound_Effect.mp3');  // Path to your MP3 file
+
+collisionSound.volume = 0.5;
+
+document.addEventListener('click', () => {
+    if (!hasInteracted) {
+        hasInteracted = true;
+        collisionSound.play();  // Allow the first click to enable sound
+    }
+});
 
 export function checkCollisions() {
     for (let i = 0; i < spaceships.length; i++) {
@@ -94,6 +106,11 @@ export function checkCollisions() {
                 if (!collidingPairs.has(pairKey)) {
                     collidingPairs.add(pairKey);
                     collisionCount++; // Increment collision count when collision is detected
+
+                    // Play sound when collision occurs, only if interaction has happened
+                    if (hasInteracted) {
+                        collisionSound.play();  // Play the collision sound
+                    }
                 }
             } else {
                 collidingPairs.delete(`${i}-${j}`);
@@ -109,7 +126,6 @@ export function checkCollisions() {
     }
 
     // Update the text on all text planes
-    // Update the text on all text planes
     textPlanes.forEach((textPlane) => {
         // Update the text texture with the pretext
         const text = `Total Spaceship Crashes: ${totalCrashCount}`; // Add pretext before the count
@@ -117,7 +133,6 @@ export function checkCollisions() {
         textPlane.material.map = texture; // Update the material texture with the new one
         textPlane.material.needsUpdate = true; // Flag the material for update
     });
-
 }
 
 setInterval(checkCollisions, 200);
