@@ -124,20 +124,42 @@ scene.add(newCylinder);
 
 
 
-
-
-// Create a function to create text textures
+// Create a function to create text textures with automatic line breaks
 function createTextTexture(text) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     
     // Set canvas size and font properties
     const fontSize = 20;
-    canvas.width = 350;
-    canvas.height = 200;
+    const maxWidth = 350; // Max width for text
+    canvas.width = maxWidth;
+    canvas.height = 200; // Height will expand dynamically based on text
     ctx.font = `bold ${fontSize}px Arial`;
     ctx.fillStyle = 'blue';
-    ctx.fillText(text, 10, 40); // Add text to the canvas
+    
+    // Break the text into lines that fit within the maxWidth
+    const words = text.split(' ');
+    let lines = [];
+    let currentLine = '';
+    
+    words.forEach(word => {
+        const testLine = currentLine + (currentLine ? ' ' : '') + word;
+        const testWidth = ctx.measureText(testLine).width;
+        
+        if (testWidth > maxWidth) {
+            lines.push(currentLine);
+            currentLine = word; // Start new line with the current word
+        } else {
+            currentLine = testLine;
+        }
+    });
+    if (currentLine) lines.push(currentLine); // Push the last line
+    
+    // Write lines to the canvas
+    const lineHeight = fontSize * 1.2; // Space between lines
+    lines.forEach((line, index) => {
+        ctx.fillText(line, 10, (index + 1) * lineHeight); // Adjust vertical position for each line
+    });
     
     // Create a texture from the canvas
     const texture = new THREE.CanvasTexture(canvas);
@@ -152,7 +174,6 @@ const fakeNewsHeadlines = [
     { headline: "Government Announces Free Healthcare, Turns Out to Be a Google Ad!", date: "2035-11-29", source: "Reality Check News" }
 ];
 
-
 // Function to get a random item from an array
 function getRandomHeadline() {
     const randomIndex = Math.floor(Math.random() * fakeNewsHeadlines.length); // Get a random index
@@ -162,9 +183,6 @@ function getRandomHeadline() {
 // Create text for the cube using a random headline
 const text = getRandomHeadline(); // Get a random headline
 console.log("Random headline:", text); // Log the random headline to check
-
-// Proceed with the rest of your code to display this random headline
-
 
 // Create the texture for the text
 const { texture, width, height } = createTextTexture(text);
