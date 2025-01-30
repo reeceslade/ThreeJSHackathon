@@ -1,28 +1,27 @@
+import { loader, scene } from '/js/main.js';
 
-/*
-const numberOfAliens = 10; // Adjust this number as needed
+export function loadAliens() {
+    const numberOfAliens = 10; // Adjust this number as needed
 
-function loadAliens() {
-    for (let i = 0; i < numberOfAliens; i++) {
-        loader.load(
-            '/alien_creature.glb', // Adjust this path to your model
-            function (gltf) {
-                const model = gltf.scene;
-                model.scale.set(2, 2, 2); // Scale the model
+    loader.load(
+        '/posed_black_man_shopping_humano_064_4985.glb', // Adjust this path to your model
+        function (gltf) {
+            const originalModel = gltf.scene;
+
+            for (let i = 0; i < numberOfAliens; i++) {
+                const model = originalModel.clone(); // Clone the model
+                model.scale.set(0.5,0.5,0.5 ); // Scale the model
                 model.position.set(
                     Math.random() * 100 - 50, // Random x position within the plane's bounds
                     0, // y position (on the ground)
                     Math.random() * 100 - 50  // Random z position within the plane's bounds
                 );
                 scene.add(model);
-            },
-            undefined,
-            function (error) {
-                console.error(error);
             }
-        );
-    }
+        },
+        undefined,
+        function (error) {
+            console.error(error);
+        }
+    );
 }
-*/
-// Call to load aliens
-//loadAliens();
