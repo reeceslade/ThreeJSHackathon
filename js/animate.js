@@ -35,9 +35,8 @@ export function animate() {
         velocity.z *= 0.9;
     }
 
-    // Rotate each spaceship in the array
     spaceships.forEach(spaceship => {
-        spaceship.rotation.y += 0.01;  // Rotate around the y-axis (you can adjust the speed)
+        spaceship.model.rotation.y += 0.01;  // Rotate the model around the y-axis
     });
 
     renderer.render(scene, camera);

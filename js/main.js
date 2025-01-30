@@ -240,7 +240,7 @@ function placeSignDuplicates(numSigns) {
         scene.add(sign);
 
         // Create text for the sign
-        const text = getRandomHeadline();
+        const text = "City Population: 10,000"; // Example text 
         const { texture, width, height } = createTextTexture(text);
 
         // Create text plane

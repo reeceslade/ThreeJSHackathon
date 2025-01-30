@@ -3,7 +3,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { scene } from '/js/main.js'; // Adjust the path as needed
 
 export const spaceships = [];  // Array to hold references to the spaceship models
-export const numberOfSpaceships = 100;  // Adjust this number as needed
+export const numberOfSpaceships = 10;  // Adjust this number as needed
 export const collidingPairs = new Set(); // Tracks pairs of colliding spaceships
 
 export const loader = new GLTFLoader();  // Now properly instantiated after the import
@@ -61,7 +61,7 @@ export function loadSpaceships(loader, scene) {
                 wireframeBox.position.set(randomX, randomY, randomZ); // Match the wireframe box position
         
                 scene.add(model);
-                spaceships.push(model);  // Store the model in the spaceships array
+                spaceships.push({ model, boundingBox, wireframeBox });  // Store the model and its bounding box in the spaceships array
         
                 // Animate the spaceship (flying effect)
                 animateSpaceship(model, wireframeBox, boundingBox); // Pass the wireframeBox to the animate function
@@ -74,6 +74,31 @@ export function loadSpaceships(loader, scene) {
     }
 }
 
+export function checkCollisions() {
+    for (let i = 0; i < spaceships.length; i++) {
+        for (let j = i + 1; j < spaceships.length; j++) {
+            const shipA = spaceships[i];
+            const shipB = spaceships[j];
+
+            // Update the bounding boxes to the current positions
+            shipA.boundingBox.setFromObject(shipA.model);
+            shipB.boundingBox.setFromObject(shipB.model);
+
+            if (shipA.boundingBox.intersectsBox(shipB.boundingBox)) {
+                const pairKey = `${i}-${j}`;
+                if (!collidingPairs.has(pairKey)) {
+                    collidingPairs.add(pairKey);
+                    console.log(`Collision detected between spaceship ${i} and spaceship ${j}`);
+                }
+            } else {
+                const pairKey = `${i}-${j}`;
+                if (collidingPairs.has(pairKey)) {
+                    collidingPairs.delete(pairKey);
+                }
+            }
+        }
+    }
+}
 
 export function animateSpaceship(model, wireframeBox, boundingBox) {
     // Random speed for movement
@@ -113,6 +138,9 @@ export function animateSpaceship(model, wireframeBox, boundingBox) {
             direction.y *= -1; // Reverse the y direction
         }
 
+        // Check for collisions
+        checkCollisions();
+
         // Call the next frame
         requestAnimationFrame(move);
     }
@@ -120,4 +148,3 @@ export function animateSpaceship(model, wireframeBox, boundingBox) {
     // Start the animation loop
     move();
 }
-
