@@ -6,6 +6,7 @@ import { loadSpaceships } from '/js/ships.js';
 import { animate } from '/js/animate.js';
 import { collisionCount } from '/js/ships.js'; // Adjust the path to your file
 import { totalCrashCount } from '/js/ships.js';
+import { loadAliens } from '/js/aliens.js';
 
 
 export { camera, renderer, controls, animate, scene, loader };
@@ -318,4 +319,5 @@ placeSignDuplicates(1); // Place 5 duplicate signs
 const loader = new GLTFLoader();
 loadSpaceships(loader, scene);
 //generateRoad(scene, 150, 20); // Creates roads in each direction, spaced 20 units apart
+loadAliens(); // Load alien models
 animate();
