@@ -16,7 +16,7 @@ export function loadAliens() {
     const scales = [
         { x: 0.2, y: 0.2, z: 0.2 }, // Scale for the first model
         { x: 8, y: 8, z: 8 }, // Scale for the second model
-        { x: 2, y: 2, z: 2 }, // Scale for the third model
+        { x: 1.5, y: 1.5, z: 1.5 }, // Scale for the third model
     ];
     
     let currentIndex = 0;
