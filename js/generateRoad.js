@@ -1,3 +1,5 @@
+/* 
+
 import * as THREE from 'three';
 import { renderer, camera } from '/js/main.js';  // Adjust the path as needed
 
@@ -148,3 +150,5 @@ export function generateRoad(scene, roadCount, roadSpacing) {
         }
     }
 }
+
+*/

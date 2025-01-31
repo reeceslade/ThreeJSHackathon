@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import {generateRoad } from '/js/generateRoad.js';
+// import {generateRoad } from '/js/generateRoad.js';
 import { loadSpaceships } from '/js/ships.js';
 import { animate } from '/js/animate.js';
 import { collisionCount } from '/js/ships.js'; // Adjust the path to your file
@@ -28,8 +28,40 @@ const floorGeometry = new THREE.PlaneGeometry(100, 100);
 const floorMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc, side: THREE.DoubleSide });
 const floor = new THREE.Mesh(floorGeometry, floorMaterial);
 floor.rotation.x = -Math.PI / 2; // Rotate the floor to be horizontal
-console.log("floor", floor.position)
 scene.add(floor);
+
+// Add a grid helper
+const gridHelper = new THREE.GridHelper(100, 30); // (size, divisions)
+scene.add(gridHelper);
+
+function generateBuildings(numBuildings) {
+    const gridSize = 100; // Match grid size
+    const divisions = 30; // Match grid divisions
+    const squareSize = gridSize / divisions; // Size of each grid square
+    const usedPositions = new Set();
+
+    for (let i = 0; i < numBuildings; i++) {
+        let x, z, key;
+        do {
+            x = (Math.floor(Math.random() * divisions) - divisions / 2) * squareSize + squareSize / 2;
+            z = (Math.floor(Math.random() * divisions) - divisions / 2) * squareSize + squareSize / 2;
+            key = `${x},${z}`;
+        } while (usedPositions.has(key)); // Ensure no duplicate positions
+        usedPositions.add(key);
+
+        const buildingHeight = Math.random() * 10 + 5; // Random height between 5 and 15
+        const buildingGeometry = new THREE.BoxGeometry(squareSize, buildingHeight, squareSize);
+        const buildingMaterial = new THREE.MeshStandardMaterial({ color: Math.random() * 0xffffff });
+        const building = new THREE.Mesh(buildingGeometry, buildingMaterial);
+
+        building.position.set(x, buildingHeight / 2, z);
+        scene.add(building);
+        
+    }
+}
+
+generateBuildings(20); // Generate 20 random buildings
+
 
 // Create walls
 const wallHeight = 5; // Height of the walls
@@ -285,5 +317,5 @@ placeSignDuplicates(1); // Place 5 duplicate signs
 // Load 3D Model
 const loader = new GLTFLoader();
 loadSpaceships(loader, scene);
-generateRoad(scene, 150, 20); // Creates roads in each direction, spaced 20 units apart
+//generateRoad(scene, 150, 20); // Creates roads in each direction, spaced 20 units apart
 animate();
