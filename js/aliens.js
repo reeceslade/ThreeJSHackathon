@@ -8,9 +8,9 @@ export function loadAliens() {
     const usedPositions = new Set(); // Keep track of used positions
 
     const modelPaths = [
-        '/tesla_cybertruck.glb',
-        '/stylized_robot_0_9_max.glb',
-        '/posed_black_man_shopping_humano_064_4985.glb',        // Add more paths as needed
+        '/3Dmodels/tesla_cybertruck.glb',
+        '/3Dmodels/stylized_robot_0_9_max.glb',
+        '/3Dmodels/posed_black_man_shopping_humano_064_4985.glb',        // Add more paths as needed
     ];
 
     const scales = [

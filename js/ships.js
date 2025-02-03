@@ -79,8 +79,8 @@ export function loadSpaceships(loader, scene) {
 export let collisionCount = 0;
 export let totalCrashCount = 0; // Variable to track total crash counts
 let hasInteracted = false;
-export const collisionSound = new Audio('/Big_Explosion_Sound_Effect.mp3');  // Path to your MP3 file
-export const backgroundMusic = new Audio('/Sci-Fi_Weapons_2_Sound_Effects_Futuristic_Cyber_Weapon_Sci-Fi_Sound_Effects.mp3');  // Path to your new MP3 file
+export const collisionSound = new Audio('/sounds/Big_Explosion_Sound_Effect.mp3');  // Path to your MP3 file
+export const backgroundMusic = new Audio('/sounds/Sci-Fi_Weapons_2_Sound_Effects_Futuristic_Cyber_Weapon_Sci-Fi_Sound_Effects.mp3');  // Path to your new MP3 file
 
 collisionSound.volume = 0.5;
 backgroundMusic.volume = 0.2;  // Set the background music volume (adjust as needed)
